@@ -1,39 +1,60 @@
 #include <apollo/video.h>
 
-char *_videoPtr = (char*) VID_MEM;
-int _videoPosition = 0;
+char *videoPtr = (char*) VID_MEM;
+int xpos = 0, ypos = 0;
+
+int videoPosition();
+void setVideoPosition(int x, int y);
+void incXpos();
+
+int videoPosition() {
+    return 2 * (xpos + ypos * VID_COL);
+}
+
+void setVideoPosition(int x, int y) {
+    if (x >= VID_COL) {
+        x = 0;
+        y += 1;
+    }
+    if (y >= VID_LINES) {
+        scroll();
+        y = VID_LINES - 1;
+    }
+    xpos = x;
+    ypos = y;
+}
 
 void clearScreen(short color) {
     int i;
 
     for (i = 0; i < VID_COL * VID_LINES * 2; i += 2) {
-        _videoPtr[i] = ' ';
-        _videoPtr[i + 1] = color;
+        videoPtr[i] = ' ';
+        videoPtr[i + 1] = color;
     }
-    _videoPosition = 0;
+    setVideoPosition(0, 0);
 }
 
 void printChar(char c, short color) {
-    if (_videoPosition >= VID_MAX) {
-        scroll();
-        _videoPosition = VID_COL * (VID_LINES - 1) * 2;
+    if (c == '\n') {
+        setVideoPosition(0, ypos + 1);
+        return;
     }
 
-    _videoPtr[_videoPosition] = c;
-    _videoPtr[_videoPosition + 1] = color;
-    _videoPosition += 2;
+    videoPtr[videoPosition()] = c;
+    videoPtr[videoPosition() + 1] = color;
+    setVideoPosition(xpos + 1, ypos);
 }
 
 void printStr(char *str, short color) {
-    if (_videoPosition >= VID_MAX) {
+    if (videoPosition() >= VID_MAX) {
         scroll();
-        _videoPosition = VID_COL * (VID_LINES - 1) * 2;
+        setVideoPosition(0, VID_LINES - 1);
     }
     char *c;
     for (c = str; *c != '\0'; c ++) {
-        _videoPtr[_videoPosition] = *c;
-        _videoPtr[_videoPosition + 1] = color;
-        _videoPosition += 2;
+        videoPtr[videoPosition()] = *c;
+        videoPtr[videoPosition() + 1] = color;
+        setVideoPosition(xpos + 1, ypos);
     }
 }
 
@@ -41,10 +62,10 @@ void scroll() {
     int i;
 
     for (i = 0; i < VID_COL * (VID_LINES - 1) * 2; i ++) {
-        _videoPtr[i] = _videoPtr[i + (VID_COL * 2)];
+        videoPtr[i] = videoPtr[i + (VID_COL * 2)];
     }
 
     for (i = 0; i < VID_COL * 2; i ++) {
-        _videoPtr[(VID_LINES - 1) * VID_COL * 2 + i] = 0;
+        videoPtr[(VID_LINES - 1) * VID_COL * 2 + i] = 0;
     }
 }

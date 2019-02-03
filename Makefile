@@ -18,3 +18,6 @@ clean:
 
 test: kernel
 		qemu-system-i386 -kernel kernel -curses
+
+testx: kernel
+		qemu-system-i386 -kernel kernel

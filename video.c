@@ -12,7 +12,10 @@ int videoPosition() {
 }
 
 void setVideoPosition(int x, int y) {
-    if (x >= VID_COL) {
+    if (x < 0) {
+        x = VID_COL - 1;
+        y = (y > 0) ? y - 1 : 0;
+    } else if (x >= VID_COL) {
         x = 0;
         y += 1;
     }
@@ -37,6 +40,12 @@ void clearScreen(short color) {
 void printChar(char c, short color) {
     if (c == '\n') {
         setVideoPosition(0, ypos + 1);
+        return;
+    }
+    if (c == '\b') {
+        setVideoPosition(xpos - 1, ypos);
+        videoPtr[videoPosition()] = 0;
+        videoPtr[videoPosition() + 1] = color;
         return;
     }
 

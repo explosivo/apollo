@@ -2,7 +2,7 @@ AS=nasm
 CC=gcc
 LD=ld
 
-CFLAGS=-Wall -Iinclude -m32 -O -fno-stack-protector
+CFLAGS=-Wall -Iinclude -m32 -O -fno-stack-protector -Wno-main
 
 %.o: %.c
 		$(CC) -c $< -o $@ $(CFLAGS)
@@ -10,7 +10,7 @@ CFLAGS=-Wall -Iinclude -m32 -O -fno-stack-protector
 %.o: %.s
 		$(AS) -f elf32 $< -o $@
 
-kernel: loader.o video.o kernel.o io.o
+kernel: loader.o video.o kernel.o io.o gdt.o idt.o
 		$(LD) -m elf_i386 -T link.ld -o $@ $^
 
 clean:

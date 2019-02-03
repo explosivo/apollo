@@ -1,5 +1,7 @@
 #include <apollo/video.h>
 #include <apollo/io.h>
+#include <apollo/gdt.h>
+#include <apollo/idt.h>
 #include <stdlib.h>
 
 void main(void) {
@@ -7,6 +9,9 @@ void main(void) {
 
     clearScreen(0x40);
     printStr("a p o l l o", 0xf0);
+
+    initGdt();
+    initIdt();
 
     outb(0x3D4, 0x0A);
     outb(0x3D5, 0x20);

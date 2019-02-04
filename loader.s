@@ -16,10 +16,10 @@ start:
     hlt
 
 global init_gdt
-extern gp
 
 init_gdt:
-    lgdt [gp]
+    mov eax, [esp + 4]
+    lgdt [eax]
     mov ax, 0x10
     mov ds, ax
     mov es, ax
@@ -31,10 +31,10 @@ init_gdt_ret:
     ret
 
 global init_idt
-extern idtp
 
 init_idt:
-    lidt [idtp]
+    mov eax, [esp + 4]
+    lidt [eax]
     ret
 
 section .bss

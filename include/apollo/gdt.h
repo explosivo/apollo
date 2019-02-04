@@ -15,10 +15,10 @@ struct gdtPtr {
     unsigned int base;
 } __attribute__((packed));
 
-struct gdtDescriptor gdt[3];
+struct gdtDescriptor gdt[5];
 struct gdtPtr gp;
 
-extern void init_gdt();
+extern void init_gdt(unsigned int);
 void initGdt();
 
 #endif

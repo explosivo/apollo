@@ -55,15 +55,9 @@ void printChar(char c, short color) {
 }
 
 void printStr(char *str, short color) {
-    if (videoPosition() >= VID_MAX) {
-        scroll();
-        setVideoPosition(0, VID_LINES - 1);
-    }
     char *c;
     for (c = str; *c != '\0'; c ++) {
-        videoPtr[videoPosition()] = *c;
-        videoPtr[videoPosition() + 1] = color;
-        setVideoPosition(xpos + 1, ypos);
+        printChar(*c, color);
     }
 }
 

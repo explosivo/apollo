@@ -7,6 +7,9 @@
 #define VID_MEM 0xb8000
 
 void clearScreen(short color);
+void enableCursor(unsigned char start, unsigned char end);
+void disableCursor();
+void updateCursor(unsigned char x, unsigned char y);
 void printChar(char c, short color);
 void printStr(char *str, short color);
 void scroll();

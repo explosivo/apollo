@@ -2,20 +2,23 @@
 #include <apollo/io.h>
 #include <apollo/gdt.h>
 #include <apollo/idt.h>
+#include <apollo/page.h>
 #include <stdlib.h>
 
 void main(void) {
+    enableCursor(14, 15);
+    clearScreen(0x07);
+
+    printStr("[initializing Global Descriptor Table]\n", 0xa0);
     initGdt();
+    printStr("[initializing Interrupt Descriptor Table]\n", 0xa0);
     initIdt();
-
-    clearScreen(0x40);
-    printStr("apollo ready", 0xf0);
-
-    // disable cursor
-    outb(0x3D4, 0x0A);
-    outb(0x3D5, 0x20);
+    printStr("[initializing Paging]\n", 0xa0);
+    initPaging();
 
     asm("sti");
+
+    printStr("good apollo, i am ready to burn star IV\n", 0x74);
 
     for (;;) {
         asm("hlt");

@@ -1,12 +1,17 @@
 #include <apollo/isr.h>
 #include <apollo/video.h>
 #include <apollo/io.h>
+#include <apollo/page.h>
 #include <stdlib.h>
 
 void interruptHandler(struct registers regs) {
     printStr("interrupt: ", 0x0f);
     printStr(itoa(regs.int_no), 0x0f);
     printChar('\n', 0x0f);
+
+    if (regs.int_no == 14) {
+        pageFault(regs);
+    }
 }
 
 void interruptRequest(struct registers regs) {

@@ -1,4 +1,5 @@
 #include <apollo/video.h>
+#include <apollo/io.h>
 
 char *videoPtr = (char*) VID_MEM;
 int xpos = 0, ypos = 0;
@@ -25,6 +26,7 @@ void setVideoPosition(int x, int y) {
     }
     xpos = x;
     ypos = y;
+    updateCursor(xpos, ypos);
 }
 
 void clearScreen(short color) {
@@ -35,6 +37,21 @@ void clearScreen(short color) {
         videoPtr[i + 1] = color;
     }
     setVideoPosition(0, 0);
+}
+
+void enableCursor(unsigned char start, unsigned char end) {
+    outb(0x3d4, 0x0a);
+    outb(0x3d5, (inb(0x3d5) & 0xc0) | start);
+    outb(0x3d4, 0x0b);
+    outb(0x3d5, (inb(0x3d5) & 0xe0) | end);
+}
+
+void updateCursor(unsigned char x, unsigned char y) {
+    unsigned short pos = y * VID_COL + x;
+    outb(0x3d4, 0x0f);
+    outb(0x3d5, (unsigned char) (pos & 0xff));
+    outb(0x3d4, 0x0e);
+    outb(0x3d5, (unsigned char) ((pos >> 8) & 0xff));
 }
 
 void printChar(char c, short color) {

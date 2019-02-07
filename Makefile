@@ -21,10 +21,22 @@ lib/lib.a:
 
 clean:
 		(cd lib; make clean)
-		rm kernel *.o
+		rm -f kernel *.o
+		rm -rf iso apollo.iso
 
 test: kernel
 		qemu-system-i386 -kernel kernel -curses
 
 testx: kernel
 		qemu-system-i386 -kernel kernel
+
+image: kernel
+		@mkdir -p iso/boot/grub
+		@cp kernel iso/boot
+		@echo -e -n 'set timeout=15\n'\
+		'set default=0\n'\
+		'menuentry \"apollo\" {\n'\
+		'    multiboot /boot/kernel\n'\
+		'    boot\n'\
+		'}' > iso/boot/grub/grub.cfg
+		@grub-mkrescue iso -o apollo.iso

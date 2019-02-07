@@ -1,3 +1,23 @@
+global init_gdt
+    init_gdt:
+    mov eax, [esp + 4]
+    lgdt [eax]
+    mov ax, 0x10
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+    jmp 0x08:init_gdt_ret
+init_gdt_ret:
+    ret
+
+global init_idt
+init_idt:
+    mov eax, [esp + 4]
+    lidt [eax]
+    ret
+
 %macro ISR_NOERRCODE 1
     global isr%1
     isr%1:

@@ -1,4 +1,5 @@
 *.o
 kernel
+lib/lib.a
 iso/
 *.iso
